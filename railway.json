@@ -1,0 +1,59 @@
+export const TEAM_COLORS = [
+  { name: "coral", hex: "#E85D3F" },
+  { name: "indigo", hex: "#4C5BD4" },
+  { name: "teal", hex: "#1F8A82" },
+  { name: "mustard", hex: "#D9A227" },
+  { name: "plum", hex: "#8C5AC0" },
+  { name: "rose", hex: "#C94F7C" },
+  { name: "sage", hex: "#4E8B4E" },
+  { name: "slate", hex: "#5B6B7A" },
+];
+
+export const DEFAULT_CATEGORIES = [
+  "Personaje famoso",
+  "Lugar",
+  "Objeto",
+  "Pelicula o serie",
+  "Animal",
+];
+
+export const ROUNDS = [
+  {
+    key: "describe",
+    name: "Describelo",
+    emoji: "🗣️",
+    instruction:
+      "Describe la palabra con la boca, sin decirla, sin traducirla y sin decir rimas.",
+  },
+  {
+    key: "one-word",
+    name: "Una palabra",
+    emoji: "☝️",
+    instruction:
+      "Solo puedes decir UNA palabra suelta para que tu equipo adivine el papelito.",
+  },
+  {
+    key: "mime",
+    name: "Mimica",
+    emoji: "🎭",
+    instruction:
+      "Nada de hablar ni hacer sonidos. Solo gestos y mucha mimica.",
+  },
+];
+
+export const TURN_SECONDS = 30;
+
+export function shuffle(array) {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+let idCounter = 0;
+export function nextId(prefix = "id") {
+  idCounter += 1;
+  return `${prefix}-${Date.now().toString(36)}-${idCounter}`;
+}

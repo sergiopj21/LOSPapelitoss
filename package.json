@@ -1,0 +1,69 @@
+# Los Papelitos 🎉
+
+Juego de fiesta web para jugar "Los Papelitos" (tambien conocido como Cranium
+Cadoo / Time's Up) con tus amigos, por equipos, en tres rondas: **Describelo**,
+**Una palabra** y **Mimica**.
+
+## Como se juega
+
+1. **Equipos y jugadores.** Crea 2 o mas equipos y anade a los jugadores de
+   cada uno. Define las categorias (por defecto: Personaje famoso, Lugar,
+   Objeto, Pelicula o serie, Animal).
+2. **Escribir papelitos.** El movil pasa de jugador en jugador. Cada uno
+   escribe en secreto una palabra por categoria.
+3. **Jugar.** Los papelitos se mezclan una unica vez y se reutilizan en las
+   tres rondas (no se cambian, solo se vuelven a barajar entre rondas):
+   - **Ronda 1 - Describelo:** describe la palabra sin decirla.
+   - **Ronda 2 - Una palabra:** solo puedes decir una palabra suelta.
+   - **Ronda 3 - Mimica:** solo gestos, nada de hablar.
+
+   Cada turno dura 30 segundos. Un jugador del equipo va sacando papelitos
+   hasta que se acaba el tiempo o se acaban los papelitos de la ronda; en ese
+   momento pasa el turno al siguiente equipo. Cuando se agota el mazo de la
+   ronda, se pasa a la siguiente ronda con los mismos papelitos.
+4. **Resultado final.** Al terminar la ronda de Mimica se muestra el marcador
+   final y el equipo ganador.
+
+## Desarrollo local
+
+```bash
+npm install
+npm run dev
+```
+
+## Despliegue
+
+### Build de produccion
+
+```bash
+npm run build   # genera /dist
+npm run start   # sirve /dist con Express en $PORT (por defecto 3000)
+```
+
+### Subir a GitHub
+
+```bash
+git init
+git add .
+git commit -m "Los Papelitos: primera version"
+git branch -M main
+git remote add origin <URL_DE_TU_REPO>
+git push -u origin main
+```
+
+### Desplegar en Railway
+
+1. En Railway, "New Project" → "Deploy from GitHub repo" → selecciona este
+   repositorio.
+2. Railway detecta Node automaticamente. `railway.json` ya define:
+   - Build: `npm run build`
+   - Start: `npm run start`
+3. No hace falta configurar variables de entorno; el servidor usa
+   `process.env.PORT`, que Railway asigna solo.
+4. Cuando termine el deploy, genera un dominio publico desde
+   "Settings → Networking → Generate Domain".
+
+## Stack
+
+- React + Vite
+- Express (solo para servir los archivos estaticos en produccion)

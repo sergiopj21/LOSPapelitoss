@@ -1,0 +1,105 @@
+import { useMemo, useState } from "react";
+import { nextId } from "../lib/game";
+
+export default function Submission({ teams, categories, onDone }) {
+  const queue = useMemo(() => {
+    const q = [];
+    teams.forEach((team) => {
+      team.players.forEach((player) => {
+        q.push({ team, player });
+      });
+    });
+    return q;
+  }, [teams]);
+
+  const [index, setIndex] = useState(0);
+  const [revealed, setRevealed] = useState(false);
+  const [words, setWords] = useState(() => Array(categories.length).fill(""));
+  const [papers, setPapers] = useState([]);
+
+  const current = queue[index];
+  const isLast = index === queue.length - 1;
+  const validCategories = categories.filter((c) => c.trim());
+  const allFilled = words.every((w, i) => !categories[i].trim() || w.trim());
+
+  function updateWord(i, value) {
+    const next = [...words];
+    next[i] = value;
+    setWords(next);
+  }
+
+  function submitPlayer() {
+    const newPapers = categories
+      .map((cat, i) => ({ category: cat, word: words[i] }))
+      .filter((p) => p.category.trim() && p.word.trim())
+      .map((p) => ({ id: nextId("paper"), category: p.category.trim(), word: p.word.trim() }));
+
+    const updatedPapers = [...papers, ...newPapers];
+
+    if (isLast) {
+      onDone(updatedPapers);
+      return;
+    }
+
+    setPapers(updatedPapers);
+    setWords(Array(categories.length).fill(""));
+    setRevealed(false);
+    setIndex(index + 1);
+  }
+
+  if (!current) return null;
+
+  if (!revealed) {
+    return (
+      <div className="screen pass-screen">
+        <div className="pass-card" style={{ "--team-color": current.team.color }}>
+          <p className="eyebrow">Pasa el movil a</p>
+          <h1 className="hand-title big">{current.player}</h1>
+          <p className="pass-team">equipo {current.team.name}</p>
+          <p className="pass-progress">
+            Jugador {index + 1} de {queue.length}
+          </p>
+          <button className="btn btn-primary big-btn" onClick={() => setRevealed(true)}>
+            Soy {current.player}, mostrar mis categorias
+          </button>
+          <p className="hint">Que nadie mas mire la pantalla 🤫</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="screen submission-screen">
+      <div className="submission-card" style={{ "--team-color": current.team.color }}>
+        <p className="eyebrow">Escribiendo en secreto</p>
+        <h2 className="hand-title">{current.player}</h2>
+        <p className="pass-team">equipo {current.team.name}</p>
+
+        <div className="word-form">
+          {categories.map((cat, i) =>
+            cat.trim() ? (
+              <label className="word-field" key={i}>
+                <span>{cat}</span>
+                <input
+                  className="text-input"
+                  value={words[i]}
+                  onChange={(e) => updateWord(i, e.target.value)}
+                  placeholder="Escribe una palabra..."
+                  maxLength={40}
+                  autoComplete="off"
+                />
+              </label>
+            ) : null
+          )}
+        </div>
+
+        <button className="btn btn-primary big-btn" disabled={!allFilled} onClick={submitPlayer}>
+          {isLast ? "Listo, mezclar papelitos →" : "Listo, ocultar y pasar el movil"}
+        </button>
+        <p className="hint">
+          {validCategories.length} categoria{validCategories.length !== 1 ? "s" : ""} por rellenar
+        </p>
+      </div>
+    </div>
+  );
+}
